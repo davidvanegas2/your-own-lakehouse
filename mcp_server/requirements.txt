@@ -1,0 +1,6 @@
+# Dependencies for the MCP server only (a subset of ../requirements.txt —
+# use this one if you only want to connect Claude Desktop to an existing stack).
+#
+# Stay on mcp 1.x: MCP SDK v2 ships mid-2026 with breaking changes.
+mcp[cli]==1.27.2
+trino==0.337.0

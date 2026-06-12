@@ -1,0 +1,14 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Local environment overrides
+.env
+
+# OS / editor noise
+.DS_Store
+.idea/
+.vscode/

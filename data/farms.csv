@@ -1,0 +1,49 @@
+farm_id,name,municipality,region,altitude_m,hectares,founded_year
+F001,Finca El Carmelo,Acevedo,Huila,1420,18.3,1956
+F002,Finca Los Alpes,Pitalito,Huila,1560,16.9,2002
+F003,Finca El Diviso,Acevedo,Huila,1895,19.4,2006
+F004,Finca La Floresta,Acevedo,Huila,1680,9.6,1971
+F005,Finca Buenos Aires,Salgar,Antioquia,1400,19.1,2015
+F006,Finca El Placer,Ciudad Bolívar,Antioquia,1735,23.4,1984
+F007,Finca El Porvenir,Jardín,Antioquia,1450,17.3,1969
+F008,Finca Alto del Roble,Andes,Antioquia,1490,29.0,2001
+F009,Finca El Refugio,Buesaco,Nariño,2025,4.2,1988
+F010,Finca El Triunfo,Sandoná,Nariño,2040,12.6,2011
+F011,Finca La Divisa,Consacá,Nariño,1640,26.4,1982
+F012,Finca La Ilusión,Consacá,Nariño,2045,21.6,1955
+F013,Finca Las Palmas,Timbío,Cauca,1910,19.2,2005
+F014,Finca Monteblanco,Timbío,Cauca,1955,13.7,1992
+F015,Finca La Esperanza,Inzá,Cauca,2100,15.9,1969
+F016,Finca Villa Laura,Inzá,Cauca,1815,3.5,1984
+F017,Finca Las Acacias,Líbano,Tolima,1770,9.5,1998
+F018,Finca San Isidro,Ibagué,Tolima,1350,7.0,1999
+F019,Finca La Argentina,Chaparral,Tolima,1865,6.1,2003
+F020,Finca La Sirena,Chaparral,Tolima,1750,14.5,1993
+F021,Finca La Meseta,Manizales,Caldas,1445,6.5,1970
+F022,Finca Las Margaritas,Palestina,Caldas,1445,21.4,1949
+F023,Finca El Cedral,Manizales,Caldas,1675,7.5,1984
+F024,Finca Los Cámbulos,Chinchiná,Caldas,1390,14.6,1995
+F025,Finca El Recuerdo,Buenavista,Quindío,1280,22.3,2013
+F026,Finca El Paraíso,Pijao,Quindío,1490,28.1,1998
+F027,Finca La Estrella,Génova,Quindío,1455,13.9,2009
+F028,Finca La Primavera,Génova,Quindío,1235,7.8,1974
+F029,Finca La Aurora,Marsella,Risaralda,1400,5.2,1954
+F030,Finca El Vergel,Belén de Umbría,Risaralda,1300,18.9,1960
+F031,Finca El Castillo,Santuario,Risaralda,1690,2.4,1974
+F032,Finca El Rubí,Marsella,Risaralda,1395,20.8,1992
+F033,Finca La Colina,Barichara,Santander,1500,5.6,2010
+F034,Finca Las Brisas,Zapatoca,Santander,1505,16.5,1958
+F035,Finca Bella Vista,San Vicente de Chucurí,Santander,1265,24.0,1981
+F036,Finca Santa Rosa,Zapatoca,Santander,1640,6.9,1950
+F037,Finca La Granada,Palmor,Magdalena,1575,13.0,1951
+F038,Finca Los Pinos,San Pedro de la Sierra,Magdalena,1015,22.5,1981
+F039,Finca La Macarena,San Pedro de la Sierra,Magdalena,1110,12.8,1976
+F040,Finca El Encanto,San Pedro de la Sierra,Magdalena,1185,20.2,1972
+F041,Finca La Pradera,Caicedonia,Valle del Cauca,1820,14.1,1977
+F042,Finca El Manantial,Caicedonia,Valle del Cauca,1630,16.8,1951
+F043,Finca El Mirador,Sevilla,Valle del Cauca,1805,10.5,1981
+F044,Finca Los Naranjos,Caicedonia,Valle del Cauca,1740,20.0,1992
+F045,Finca El Roble,La Paz,Cesar,1545,29.5,1994
+F046,Finca Los Guaduales,Pueblo Bello,Cesar,1380,5.0,2008
+F047,Finca La Cabaña,Manaure,Cesar,1530,8.2,1948
+F048,Finca El Edén,La Paz,Cesar,1540,25.3,1958

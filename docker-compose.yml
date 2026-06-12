@@ -1,0 +1,119 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Your own lakehouse, 100% local — no AWS account, no cloud, no credit card.
+#
+#   MinIO   = S3-compatible object storage   (plays the role of AWS S3)
+#   Nessie  = Iceberg REST catalog           (plays the role of AWS Glue,
+#                                             but with Git-like branches!)
+#   Trino   = distributed SQL query engine   (plays the role of AWS Athena)
+#
+# Start everything:   docker compose up -d --wait
+# Check status:       docker compose ps
+#
+# All image tags are pinned so the workshop behaves the same on every laptop.
+# ─────────────────────────────────────────────────────────────────────────────
+name: lakehouse
+
+services:
+  # ── Object storage ─────────────────────────────────────────────────────────
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    ports:
+      - "${MINIO_PORT:-9000}:9000"           # S3 API
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"   # web console (browse your files here)
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      # mc ships inside the MinIO image with a built-in alias `local`.
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # ── One-shot init: create the `warehouse` bucket, then exit ────────────────
+  minio-init:
+    image: minio/mc:RELEASE.2025-08-13T08-35-41Z
+    container_name: minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        mc alias set local http://minio:9000 '${MINIO_ROOT_USER:-minioadmin}' '${MINIO_ROOT_PASSWORD:-minioadmin}' &&
+        mc mb --ignore-existing local/warehouse &&
+        echo '>>> warehouse bucket is ready'
+
+  # ── Catalog: tracks which Iceberg tables exist and their metadata ──────────
+  nessie:
+    image: ghcr.io/projectnessie/nessie:0.107.9
+    container_name: nessie
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
+    ports:
+      - "${NESSIE_PORT:-19120}:19120"   # REST API + web UI
+    environment:
+      # Git-like version store for the catalog. IN_MEMORY needs zero extra
+      # containers; catalog history vanishes on restart (fine for a workshop —
+      # re-run the seed to get your tables back).
+      - nessie.version.store.type=IN_MEMORY
+      # Every new Iceberg table lands in this warehouse (= MinIO bucket).
+      - nessie.catalog.default-warehouse=warehouse
+      - nessie.catalog.warehouses.warehouse.location=s3://warehouse/
+      # How Nessie itself talks to MinIO (inside the compose network).
+      - nessie.catalog.service.s3.default-options.region=us-east-1
+      - nessie.catalog.service.s3.default-options.path-style-access=true
+      - nessie.catalog.service.s3.default-options.endpoint=http://minio:9000/
+      # The S3 endpoint Nessie advertises to clients running on YOUR laptop
+      # (e.g. PyIceberg) — those reach MinIO through the published port.
+      - nessie.catalog.service.s3.default-options.external-endpoint=http://localhost:${MINIO_PORT:-9000}/
+      # Keep things simple and deterministic for the workshop: every engine
+      # brings its own static MinIO credentials, so Nessie does not need to
+      # sign S3 requests on behalf of clients.
+      - nessie.catalog.service.s3.default-options.request-signing-enabled=false
+      # Nessie's own MinIO credentials, via its secrets indirection (URN).
+      - nessie.catalog.service.s3.default-options.access-key=urn:nessie-secret:quarkus:nessie.catalog.secrets.access-key
+      - nessie.catalog.secrets.access-key.name=${MINIO_ROOT_USER:-minioadmin}
+      - nessie.catalog.secrets.access-key.secret=${MINIO_ROOT_PASSWORD:-minioadmin}
+    mem_limit: 1g
+    healthcheck:
+      # Health lives on Nessie's internal management port 9000 (not published).
+      # The /dev/tcp trick comes from Nessie's official compose examples —
+      # the image ships no curl/wget.
+      test: "exec 3<>/dev/tcp/localhost/9000 && echo -e 'GET /q/health HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200 OK'"
+      interval: 5s
+      timeout: 2s
+      retries: 30
+      start_period: 10s
+
+  # ── SQL engine: queries the Iceberg tables that Nessie tracks ──────────────
+  trino:
+    image: trinodb/trino:481
+    container_name: trino
+    depends_on:
+      nessie:
+        condition: service_healthy
+    ports:
+      - "${TRINO_PORT:-8080}:8080"   # HTTP API + web UI (log in with any username)
+    volumes:
+      # Mount ONLY the catalog folder; everything else uses the image defaults.
+      - ./trino/catalog:/etc/trino/catalog
+    # Trino's JVM sizes itself to 80% of this limit. 2 GB is plenty for
+    # workshop-sized queries and keeps 8 GB laptops comfortable.
+    mem_limit: 2g
+    healthcheck:
+      # Same script as the image's built-in check, but with a much more
+      # generous budget so `up --wait` doesn't give up on slower laptops.
+      test: ["CMD", "/usr/lib/trino/bin/health-check"]
+      interval: 5s
+      timeout: 10s
+      retries: 40
+      start_period: 20s
+
+volumes:
+  minio-data:

@@ -1,0 +1,15 @@
+# One virtualenv covers the whole workshop (seed script + MCP server).
+# Versions pinned on 2026-06-11 so every laptop installs identical bits.
+
+# Writes Iceberg tables in pure Python (no Spark needed).
+# The s3fs extra is required: Nessie tells PyIceberg clients to use the
+# fsspec FileIO (py-io-impl in its REST responses), which is backed by s3fs.
+pyiceberg[pyarrow,s3fs]==0.11.1
+pyarrow==24.0.0
+s3fs==2026.4.0
+
+# Official MCP SDK (v2 ships mid-2026 with breaking changes — stay on 1.x).
+mcp[cli]==1.27.2
+
+# Trino DBAPI client used by the MCP server.
+trino==0.337.0
