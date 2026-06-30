@@ -115,6 +115,13 @@ your "save point". Copy the full hash from the Nessie UI, or:
 curl -s http://localhost:19120/api/v2/trees/main | python3 -c "import sys,json; print(json.load(sys.stdin)['reference']['hash'])"
 ```
 
+Also note the **current UTC time** — you'll use it in 3b to travel back by
+timestamp. (Must be UTC: Nessie commit times are UTC.)
+
+```bash
+python3 -c "from datetime import datetime, timezone; print(datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'))"
+```
+
 Now sell one legendary lot:
 
 ```sql
@@ -133,9 +140,15 @@ Put the saved hash (the **full** 64-character one) **inside the table name**:
 -- The table as it was at your checkpoint:
 SELECT count(*) FROM "lots#<paste-your-full-hash-here>";   -- 360. The past!
 
--- Or travel by timestamp (UTC, ISO format):
-SELECT count(*) FROM "lots#2026-06-15T14:00:00Z";
+-- Or travel by timestamp — paste the UTC time you captured in 3a (it must be
+-- AFTER the seed but BEFORE your INSERT, which is exactly when you grabbed it):
+SELECT count(*) FROM "lots#<paste-your-UTC-timestamp-here>";   -- 360. The past!
 ```
+
+> ⏱️ Use the timestamp you captured in 3a, not a made-up one: Nessie resolves
+> `lots#<timestamp>` to the latest commit **at or before** that instant. A time
+> earlier than your first commit (e.g. the seed) has no commit to point at and
+> errors with `Table ... does not exist`.
 
 > Why not Iceberg's classic `FOR VERSION AS OF`? Nessie serves exactly one
 > snapshot per commit (that's how it keeps *cross-table* consistency), so time
