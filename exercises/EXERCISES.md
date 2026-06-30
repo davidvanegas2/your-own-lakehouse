@@ -182,8 +182,16 @@ following the boxes in the code (the plumbing functions are already written).
 Test without touching Claude:
 
 ```bash
-python mcp_server/smoke_test.py server.py
+make smoke-stub    # smoke-tests YOUR server.py (not the solution)
 ```
+
+> No `make`? Run it with the **`.venv` Python** — the one that has `mcp` and
+> `trino` installed; a bare `python …` will fail with `ModuleNotFoundError`:
+>
+> ```bash
+> .venv/bin/python mcp_server/smoke_test.py server.py          # macOS / Linux
+> .venv\Scripts\python mcp_server\smoke_test.py server.py      # Windows
+> ```
 
 When it passes, connect **your** server to Claude Desktop (README → "Connect
 Claude Desktop", using `server.py` instead of `server_solution.py`), restart

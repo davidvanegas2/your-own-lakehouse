@@ -105,6 +105,17 @@ Exercise 4. It exposes three tools — `list_tables`, `describe_table`,
 make smoke     # = .venv/bin/python mcp_server/smoke_test.py
 ```
 
+> ⚠️ The smoke test (and the seed) need `mcp` and `trino`, which live only in
+> the **`.venv` virtualenv**, not in your system Python — `make` always uses the
+> right one. To smoke-test **your** Exercise 4 `server.py`, run `make smoke-stub`.
+> Running by hand without `make`? Call the venv's Python explicitly — a bare
+> `python …` will fail with `ModuleNotFoundError`:
+>
+> ```bash
+> .venv/bin/python mcp_server/smoke_test.py server.py          # macOS / Linux
+> .venv\Scripts\python mcp_server\smoke_test.py server.py      # Windows
+> ```
+
 **Option A — manual config (recommended, always works).**
 Open the config file (Claude Desktop → Settings → Developer → Edit Config):
 
@@ -183,6 +194,7 @@ and connect Claude → (stretch) **branch your data like Git** with Nessie.
 | `make seed`   | `.venv/bin/python seed/seed_data.py` (Windows: `.venv\Scripts\python seed\seed_data.py`) |
 | `make trino`  | `docker exec -it trino trino` |
 | `make smoke`  | `.venv/bin/python mcp_server/smoke_test.py` |
+| `make smoke-stub` | `.venv/bin/python mcp_server/smoke_test.py server.py` |
 | `make down`   | `docker compose down` |
 | `make clean`  | `docker compose down -v` |
 
@@ -319,6 +331,17 @@ Ejercicio 4. Expone tres herramientas — `list_tables`, `describe_table`,
 make smoke     # = .venv/bin/python mcp_server/smoke_test.py
 ```
 
+> ⚠️ El smoke test (y el seed) necesitan `mcp` y `trino`, que viven solo en el
+> **virtualenv `.venv`**, no en tu Python del sistema — `make` siempre usa el
+> correcto. Para probar **tu** `server.py` del Ejercicio 4, corre
+> `make smoke-stub`. ¿Sin `make`? Llama al Python del venv explícitamente — un
+> `python …` pelado falla con `ModuleNotFoundError`:
+>
+> ```bash
+> .venv/bin/python mcp_server/smoke_test.py server.py          # macOS / Linux
+> .venv\Scripts\python mcp_server\smoke_test.py server.py      # Windows
+> ```
+
 **Opción A — configuración manual (recomendada, siempre funciona).**
 Abre el archivo de configuración (Claude Desktop → Settings → Developer →
 Edit Config):
@@ -399,6 +422,7 @@ en Git** con Nessie.
 | `make seed`   | `.venv/bin/python seed/seed_data.py` (Windows: `.venv\Scripts\python seed\seed_data.py`) |
 | `make trino`  | `docker exec -it trino trino` |
 | `make smoke`  | `.venv/bin/python mcp_server/smoke_test.py` |
+| `make smoke-stub` | `.venv/bin/python mcp_server/smoke_test.py server.py` |
 | `make down`   | `docker compose down` |
 | `make clean`  | `docker compose down -v` |
 

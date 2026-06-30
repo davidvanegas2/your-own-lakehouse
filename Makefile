@@ -8,7 +8,7 @@ export
 VENV   := .venv
 PYTHON := $(VENV)/bin/python
 
-.PHONY: help up down clean health venv seed trino mcp smoke logs
+.PHONY: help up down clean health venv seed trino mcp smoke smoke-stub logs
 
 help:
 	@echo "make up      - start MinIO + Nessie + Trino and wait until healthy"
@@ -16,7 +16,8 @@ help:
 	@echo "make seed    - create and load the Iceberg tables (PyIceberg)"
 	@echo "make trino   - open an interactive Trino SQL shell"
 	@echo "make mcp     - run the MCP server (solution version) over stdio"
-	@echo "make smoke   - end-to-end MCP smoke test (lists tools, runs a query)"
+	@echo "make smoke   - end-to-end MCP smoke test against server_solution.py"
+	@echo "make smoke-stub - same smoke test against YOUR server.py (Exercise 4)"
 	@echo "make logs    - tail logs from all containers"
 	@echo "make down    - stop the stack (table data in MinIO survives)"
 	@echo "make clean   - stop the stack AND delete all data"
@@ -61,6 +62,10 @@ mcp: venv
 
 smoke: venv
 	$(PYTHON) mcp_server/smoke_test.py
+
+# Smoke-test YOUR work-in-progress server (Exercise 4), not the solution.
+smoke-stub: venv
+	$(PYTHON) mcp_server/smoke_test.py server.py
 
 logs:
 	docker compose logs -f
